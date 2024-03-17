@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Core\Blog\Command;
+namespace App\Core\Security\Command;
 
 use App\Core\Security\Entity\User;
 use App\Core\Security\Repository\UserRepository;

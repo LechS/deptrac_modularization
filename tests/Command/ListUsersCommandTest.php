@@ -11,7 +11,7 @@
 
 namespace App\Tests\Command;
 
-use App\Core\Blog\Command\ListUsersCommand;
+use App\Core\Security\Command\ListUsersCommand;
 
 final class ListUsersCommandTest extends AbstractCommandTest
 {
