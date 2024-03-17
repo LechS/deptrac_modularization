@@ -1,23 +1,28 @@
 imports:
-    - deptrac_security.baseline.yaml
+    - deptrac_blog.baseline.yaml
 parameters:
     paths:
         - ./src
     exclude_files:
         - '#.*test.*#'
     layers:
-        -   name: ControllersCommands
+        -   name: Controllers
             collectors:
                 -   type: className
-                    regex: App\\(Controller|Command)\\(SecurityController|UserController|AddUserCommand|DeleteUserCommand|ListUsersCommand)
+                    regex: App\\Controller\\BlogController|App\\Controller\\Admin\\BlogController
         -   name: Persistence
             collectors:
                 -   type: className
-                    regex: App\\(Entity|Repository)\\(User|UserRepository)
+                    regex: App\\(Entity|Repository|Pagination)\\(Comment|Post|Tag|PostRepository|TagRepository|Paginator)
         -   name: Service
             collectors:
-                -   type: className
-                    regex: App\\(Form)\\(ChangePasswordType|UserType)
+                - type: bool
+                  must:
+                      -   type: className
+                          regex: App\\(Form|Event|EventSubscriber|Twig|Security).*
+                  must_not:
+                      -   type: className
+                          regex: App\\(Form)\\(ChangePasswordType|UserType)
         -   name: Shared
             collectors:
                 -   type: className
@@ -30,7 +35,7 @@ parameters:
                           regex: App\\.*
                     must_not:
                         - type: layer
-                          layer: ControllersCommands
+                          layer: Controllers
                         - type: layer
                           layer: Persistence
                         - type: layer
@@ -40,7 +45,7 @@ parameters:
                         - type: className
                           regex: App\\DataFixtures\\.*
     ruleset:
-        ControllersCommands:
+        Controllers:
             - Persistence
             - Service
             - Shared
@@ -48,13 +53,15 @@ parameters:
             - Persistence
         Persistence:
         Shared:
+            - System
         System:
+            - Shared
     formatters:
         graphviz:
             hidden_layers:  []
             groups:
                 SecurityModule:
-                    - ControllersCommands
+                    - Controllers
                     - Persistence
                     - Service
             point_to_groups: false
