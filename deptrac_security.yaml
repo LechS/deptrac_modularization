@@ -6,19 +6,15 @@ parameters:
     exclude_files:
         - '#.*test.*#'
     layers:
-        -   name: SecurityModule_Controller
+        -   name: ControllersCommands
             collectors:
                 -   type: className
-                    regex: App\\Controller\\(SecurityController|UserController)
-        -   name: SecurityModule_Command
-            collectors:
-                -   type: className
-                    regex: App\\Command\\(AddUserCommand|DeleteUserCommand|ListUsersCommand)
-        -   name: SecurityModule_Persistence
+                    regex: App\\(Controller|Command)\\(SecurityController|UserController|AddUserCommand|DeleteUserCommand|ListUsersCommand)
+        -   name: Persistence
             collectors:
                 -   type: className
                     regex: App\\(Entity|Repository)\\(User|UserRepository)
-        -   name: SecurityModule_Service
+        -   name: Service
             collectors:
                 -   type: className
                     regex: App\\(Form)\\(ChangePasswordType|UserType)
@@ -34,34 +30,31 @@ parameters:
                           regex: App\\.*
                     must_not:
                         - type: layer
-                          layer: SecurityModule_Controller
+                          layer: ControllersCommands
                         - type: layer
-                          layer: SecurityModule_Command
+                          layer: Persistence
                         - type: layer
-                          layer: SecurityModule_Persistence
-                        - type: layer
-                          layer: SecurityModule_Service
+                          layer: Service
                         - type: layer
                           layer: Shared
                         - type: className
                           regex: App\\DataFixtures\\.*
     ruleset:
-        SecurityModule_Controller:
-            - SecurityModule_Persistence
-            - SecurityModule_Service
-        SecurityModule_Command:
-            - SecurityModule_Persistence
+        ControllersCommands:
+            - Persistence
+            - Service
             - Shared
-        SecurityModule_Service:
-            - SecurityModule_Persistence
-        SecurityModule_Persistence:
+        Service:
+            - Persistence
+        Persistence:
+        Shared:
+        System:
     formatters:
         graphviz:
             hidden_layers:  []
             groups:
                 SecurityModule:
-                    - SecurityModule_Controller
-                    - SecurityModule_Command
-                    - SecurityModule_Persistence
-                    - SecurityModule_Service
+                    - ControllersCommands
+                    - Persistence
+                    - Service
             point_to_groups: false
