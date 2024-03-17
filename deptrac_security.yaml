@@ -1,0 +1,67 @@
+#deptracimports:
+#    - deptrac.baseline.yaml
+parameters:
+    paths:
+        - ./src
+    exclude_files:
+        - '#.*test.*#'
+    layers:
+        -   name: SecurityModule_Controller
+            collectors:
+                -   type: className
+                    regex: App\\Controller\\(SecurityController|UserController)
+        -   name: SecurityModule_Command
+            collectors:
+                -   type: className
+                    regex: App\\Command\\(AddUserCommand|DeleteUserCommand|ListUsersCommand)
+        -   name: SecurityModule_Persistence
+            collectors:
+                -   type: className
+                    regex: App\\(Entity|Repository)\\(User|UserRepository)
+        -   name: SecurityModule_Service
+            collectors:
+                -   type: className
+                    regex: App\\(Form)\\(ChangePasswordType|UserType)
+        -   name: Shared
+            collectors:
+                -   type: className
+                    regex: App\\Utils.*
+        -   name: System
+            collectors:
+                -   type: bool
+                    must:
+                        - type: className
+                          regex: App\\.*
+                    must_not:
+                        - type: layer
+                          layer: SecurityModule_Controller
+                        - type: layer
+                          layer: SecurityModule_Command
+                        - type: layer
+                          layer: SecurityModule_Persistence
+                        - type: layer
+                          layer: SecurityModule_Service
+                        - type: layer
+                          layer: Shared
+                        - type: className
+                          regex: App\\DataFixtures\\.*
+    ruleset:
+        SecurityModule_Controller:
+            - SecurityModule_Persistence
+            - SecurityModule_Service
+        SecurityModule_Command:
+            - SecurityModule_Persistence
+            - Shared
+        SecurityModule_Service:
+            - SecurityModule_Persistence
+        SecurityModule_Persistence:
+    formatters:
+        graphviz:
+            hidden_layers:  []
+            groups:
+                SecurityModule:
+                    - SecurityModule_Controller
+                    - SecurityModule_Command
+                    - SecurityModule_Persistence
+                    - SecurityModule_Service
+            point_to_groups: false
