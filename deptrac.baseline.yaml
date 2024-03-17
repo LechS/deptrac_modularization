@@ -1,0 +1,25 @@
+deptrac:
+  skip_violations:
+    App\Command\AddUserCommand:
+      - App\Entity\User
+      - App\Repository\UserRepository
+    App\Command\DeleteUserCommand:
+      - App\Entity\User
+      - App\Repository\UserRepository
+    App\Command\ListUsersCommand:
+      - App\Entity\User
+      - App\Repository\UserRepository
+    App\Controller\Admin\BlogController:
+      - App\Entity\Post
+      - App\Entity\User
+      - App\Repository\PostRepository
+    App\Controller\BlogController:
+      - App\Entity\Comment
+      - App\Entity\Post
+      - App\Entity\User
+      - App\Repository\PostRepository
+      - App\Repository\TagRepository
+    App\Controller\SecurityController:
+      - App\Entity\User
+    App\Controller\UserController:
+      - App\Entity\User
