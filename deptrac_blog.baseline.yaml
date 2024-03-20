@@ -1,0 +1,14 @@
+deptrac:
+  skip_violations:
+    App\Controller\Admin\BlogController:
+      - App\Entity\User
+    App\Controller\BlogController:
+      - App\Entity\User
+    App\Entity\Comment:
+      - App\Entity\User
+    App\Entity\Post:
+      - App\Entity\User
+    App\EventSubscriber\CommentNotificationSubscriber:
+      - App\Entity\User
+    App\Security\PostVoter:
+      - App\Entity\User

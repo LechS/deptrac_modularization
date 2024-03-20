@@ -1,0 +1,67 @@
+imports:
+    - deptrac_blog.baseline.yaml
+parameters:
+    paths:
+        - ./src
+    exclude_files:
+        - '#.*test.*#'
+    layers:
+        -   name: Controllers
+            collectors:
+                -   type: className
+                    regex: App\\Controller\\(BlogController|Admin\\BlogController)
+        -   name: Persistence
+            collectors:
+                -   type: className
+                    regex: App\\(Entity|Repository|Pagination)\\(Comment|Post|Tag|PostRepository|TagRepository|Paginator)
+        -   name: Service
+            collectors:
+                - type: bool
+                  must:
+                      -   type: className
+                          regex: App\\(Form|Event|EventSubscriber|Twig|Security).*
+                  must_not:
+                      -   type: className
+                          regex: App\\(Form)\\(ChangePasswordType|UserType)
+        -   name: Shared
+            collectors:
+                -   type: className
+                    regex: App\\Utils.*
+        -   name: System
+            collectors:
+                -   type: bool
+                    must:
+                        - type: className
+                          regex: App\\.*
+                    must_not:
+                        - type: layer
+                          layer: Controllers
+                        - type: layer
+                          layer: Persistence
+                        - type: layer
+                          layer: Service
+                        - type: layer
+                          layer: Shared
+                        - type: className
+                          regex: App\\DataFixtures\\.*
+    ruleset:
+        Controllers:
+            - Persistence
+            - Service
+            - Shared
+        Service:
+            - Persistence
+        Persistence:
+        Shared:
+            - System
+        System:
+            - Shared
+    formatters:
+        graphviz:
+            hidden_layers:  []
+            groups:
+                BlogModule:
+                    - Controllers
+                    - Persistence
+                    - Service
+            point_to_groups: false

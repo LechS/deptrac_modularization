@@ -1,0 +1,96 @@
+imports:
+    - deptrac_blog.baseline.yaml
+parameters:
+    paths:
+        - ./src
+    exclude_files:
+        - '#.*test.*#'
+    layers:
+        -   name: Security_ControllersCommands
+            collectors:
+                -   type: className
+                    regex: App\\(Controller|Command)\\(SecurityController|UserController|AddUserCommand|DeleteUserCommand|ListUsersCommand)
+        -   name: Security_Persistence
+            collectors:
+                -   type: className
+                    regex: App\\(Entity|Repository)\\(User|UserRepository)
+        -   name: Security_Service
+            collectors:
+                -   type: className
+                    regex: App\\(Form)\\(ChangePasswordType|UserType)
+        -   name: Blog_Controllers
+            collectors:
+                -   type: className
+                    regex: App\\Controller\\(BlogController|Admin\\BlogController)
+        -   name: Blog_Persistence
+            collectors:
+                -   type: className
+                    regex: App\\(Entity|Repository|Pagination)\\(Comment|Post|Tag|PostRepository|TagRepository|Paginator)
+        -   name: Blog_Service
+            collectors:
+                - type: bool
+                  must:
+                      -   type: className
+                          regex: App\\(Form|Event|EventSubscriber|Twig|Security).*
+                  must_not:
+                      -   type: className
+                          regex: App\\(Form)\\(ChangePasswordType|UserType)
+        -   name: Shared
+            collectors:
+                -   type: className
+                    regex: App\\Utils.*
+        -   name: System
+            collectors:
+                -   type: bool
+                    must:
+                        - type: className
+                          regex: App\\.*
+                    must_not:
+                        - type: layer
+                          layer: Blog_Controllers
+                        - type: layer
+                          layer: Blog_Persistence
+                        - type: layer
+                          layer: Blog_Service
+                        - type: layer
+                          layer: Security_ControllersCommands
+                        - type: layer
+                          layer: Security_Service
+                        - type: layer
+                          layer: Security_Persistence
+                        - type: layer
+                          layer: Shared
+                        - type: className
+                          regex: App\\DataFixtures\\.*
+    ruleset:
+        Blog_Controllers:
+            - Blog_Persistence
+            - Blog_Service
+            - Shared
+        Blog_Service:
+            - Blog_Persistence
+        Security_ControllersCommands:
+            - Security_Persistence
+            - Security_Service
+            - Shared
+        Security_Service:
+            - Security_Persistence
+        Shared:
+            - System
+        System:
+            - Shared
+    formatters:
+        graphviz:
+            hidden_layers:
+                - System
+                - Shared
+            groups:
+                SecurityModule:
+                    - Security_ControllersCommands
+                    - Security_Persistence
+                    - Security_Service
+                BlogModule:
+                    - Blog_Controllers
+                    - Blog_Persistence
+                    - Blog_Service
+            point_to_groups: false
