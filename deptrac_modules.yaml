@@ -21,7 +21,7 @@ parameters:
         -   name: Blog_Controllers
             collectors:
                 -   type: className
-                    regex: App\\Controller\\BlogController|App\\Controller\\Admin\\BlogController
+                    regex: App\\Controller\\(BlogController|Admin\\BlogController)
         -   name: Blog_Persistence
             collectors:
                 -   type: className
