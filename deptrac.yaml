@@ -1,0 +1,37 @@
+imports:
+    - deptrac.baseline.yaml
+parameters:
+    paths:
+        - ./src
+    exclude_files:
+        - '#.*test.*#'
+    layers:
+        -   name: Controller
+            collectors:
+                -   type: className
+                    regex: App\\Controller.*
+        -   name: Command
+            collectors:
+                -   type: className
+                    regex: App\\Command.*
+        -   name: Persistence
+            collectors:
+                -   type: className
+                    regex: App\\(Entity|Repository|Pagination).*
+        -   name: Service
+            collectors:
+                -  type: className
+                   regex: App\\(Event|EventSubscriber|Form|Security|Utils).*
+    ruleset:
+        Controller:
+            - Service
+        Command:
+            - Service
+        Service:
+            - Persistence
+        Persistence:
+    formatters:
+        graphviz:
+            hidden_layers:  []
+            groups: []
+            point_to_groups: false
